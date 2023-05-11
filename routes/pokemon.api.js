@@ -6,9 +6,8 @@ const fs = require("fs");
 router.get("/", (req, res, next) => {
   try {
     let { page, limit, name, type } = req.query;
-
     page = parseInt(page) || 1;
-    limit = parseInt(limit) || 12;
+    limit = parseInt(limit) || 20;
 
     let offset = limit * (page - 1);
 
@@ -22,8 +21,8 @@ router.get("/", (req, res, next) => {
         : pokemons.filter((e) => e.name === name);
     } else if (type) {
       result = result.length
-        ? result.filter((e) => e.type1 === type || e.type2 === type)
-        : pokemons.filter((e) => e.type1 === type || e.type2 === type);
+        ? result.filter((e) => e.types.includes(type))
+        : pokemons.filter((e) => e.types.includes(type));
     } else {
       result = pokemons;
     }
@@ -45,13 +44,15 @@ router.get("/:pokemonId", (req, res, next) => {
     const { pokemons } = db;
 
     const targetPokemonIndex = pokemons.findIndex((e) => e.id === pokemonId);
+    console.log(targetPokemonIndex);
     const pokemon = pokemons[targetPokemonIndex];
+
     const previousPokemon =
       targetPokemonIndex === 0
-        ? pokemons[808]
+        ? pokemons[780]
         : pokemons[targetPokemonIndex - 1];
     const nextPokemon =
-      targetPokemonIndex === 808
+      targetPokemonIndex === 780
         ? pokemons[0]
         : pokemons[targetPokemonIndex + 1];
 
